@@ -1,0 +1,24 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t jodha33/datestimage -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run jodha33/datestimage npm test -- --coverage
+
+after_success:
+    - docker build -t jodha33/daclientimage ./client
+    - docker build -t jodha33/daserverimage ./server
+    - docker build -t jodha33/daworkerimage ./worker
+    - docker build -t jodha33/danginximage ./nginx
+
+#Login to Docker Hub
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+#Push Images to docker
+- docker push jodha33/daclientimage
+- docker push jodha33/daserverimage
+- docker push jodha33/daworkerimage
+- docker push jodha33/danginximage
