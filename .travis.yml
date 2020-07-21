@@ -1,4 +1,5 @@
 sudo: required
+language: generic
 services:
     - docker
 
@@ -6,7 +7,7 @@ before_install:
     - docker build -t jodha33/datestimage -f ./client/Dockerfile.dev ./client
 
 script:
-    - docker run jodha33/datestimage npm test -- --coverage
+    - docker run -e CI=true jodha33/datestimage npm test
 
 after_success:
     - docker build -t jodha33/daclientimage ./client
